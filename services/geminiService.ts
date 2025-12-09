@@ -1,3 +1,4 @@
+
 import { GoogleGenAI, Type } from "@google/genai";
 import { Platform, ProductDetails } from "../types";
 
@@ -10,20 +11,27 @@ export const generateMarketingCopy = async (
   tone: 'funny' | 'urgent' | 'professional' = 'funny'
 ): Promise<{ title: string; description: string; hashtags: string[] }> => {
   
+  const priceContext = product.originalPrice 
+    ? `Price Logic: The old price was ${product.originalPrice} and the NEW price is ${product.promotionalPrice}. CALCULATE the discount percentage and mention it if it's above 10%. Use terms like "De X por Y" to create shock.`
+    : `Price: ${product.promotionalPrice}. If it's cheap, say it's a steal.`;
+
   const prompt = `
-    You are a world-class copywriter for an affiliate marketing bot.
-    Task: Write a short, viral, and ${tone} sales post for a product.
+    You are a viral marketing expert for WhatsApp groups.
+    Task: Write a text that feels like a friend recommending a product to a group. It must be FUN, BRIEF, and URGENT.
     
     Product Details:
     - Name: ${product.name}
     - Platform: ${product.platform}
-    - Price: ${product.price}
+    - ${priceContext}
     
-    Requirements:
-    1. Title: Catchy, uses an emoji, maximum 60 characters.
-    2. Description: 2-3 sentences. Focus on benefits or humor. Mention the price if it looks like a deal.
-    3. Hashtags: 3-5 relevant hashtags for Instagram/TikTok.
-    4. Language: Portuguese (Brazil).
+    Structure required:
+    1. Title: Short, punchy, uses emojis. Example: "🚨 BUG NA AMAZON?" or "😱 OLHA ESSE PREÇO". Max 50 chars.
+    2. Description: EXTREMELY BRIEF (max 2 sentences). 
+       - Sentence 1: Fun context of what it is (e.g., "Pra você parar de passar vergonha com fone de fio").
+       - Sentence 2: The price anchor (De/Por) + Urgency ("Corre que vai acabar").
+    3. Hashtags: 3 short tags.
+    
+    Language: Portuguese (Brazil). Informal internet slang allowed (kks, top, corre).
     
     Output JSON format only.
   `;
@@ -57,9 +65,9 @@ export const generateMarketingCopy = async (
   } catch (error) {
     console.error("Gemini generation error:", error);
     return {
-      title: "🔥 Oferta Imperdível!",
-      description: `Confira este produto incrível no ${product.platform}. O preço está ótimo!`,
-      hashtags: ["#promo", "#oferta", "#imperdivel"]
+      title: "🔥 OFERTA RELÂMPAGO!",
+      description: `Galera, olha isso! De ${product.originalPrice || 'R$ 999'} por apenas ${product.promotionalPrice}! 🏃‍♂️\nÉ pra acabar o estoque agora.`,
+      hashtags: ["#corre", "#promobug", "#oferta"]
     };
   }
 };

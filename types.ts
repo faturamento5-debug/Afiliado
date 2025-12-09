@@ -1,3 +1,4 @@
+
 export enum Platform {
   MERCADO_LIVRE = 'Mercado Livre',
   AMAZON = 'Amazon',
@@ -8,7 +9,8 @@ export enum Platform {
 export interface ProductDetails {
   url: string;
   name: string;
-  price: string;
+  originalPrice?: string;
+  promotionalPrice: string;
   platform: Platform;
 }
 
@@ -31,6 +33,7 @@ export interface GroupConfig {
   link: string;
   clicks: number;
   maxClicks: number;
+  members: number; // Added members count
   isActive: boolean;
 }
 
